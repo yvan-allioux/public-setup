@@ -19,6 +19,6 @@ git clone https://github.com/marlonrichert/zsh-autocomplete.git ~/.zsh/zsh-autoc
 
 #git clone https://github.com/tom-doerr/zsh_codex.git ~/.zsh/zsh_codex 
 
-curl https://raw.githubusercontent.com/yvan-allioux/linux-setup/main/.zshrc > ~/.zshrc
+curl https://raw.githubusercontent.com/yvan-allioux/public-setup/main/.zshrc > ~/.zshrc
 
 
