@@ -126,7 +126,10 @@ configure_prompt() {
 
     prompt_color1="red"
     prompt_color2="blue"
-    prompt_color3="magenta"
+    prompt_color3="red"
+    
+    #https://unix.stackexchange.com/questions/124407/what-color-codes-can-i-use-in-my-bash-ps1-prompt/124409#124409
+
     # Skull emoji for root terminal
     [ "$EUID" -eq 0 ] && prompt_symbol=💀
     case "$PROMPT_ALTERNATIVE" in
@@ -135,15 +138,31 @@ configure_prompt() {
             git_branch() {
                 local branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
                 if [ -n "$branch" ]; then
-                    echo "%B%F{$prompt_color3} ${prompt_symbol2} %B%F{$prompt_color2}$branch%F{reset}"
+                    echo "%b%F{$prompt_color3} %b${prompt_symbol2} %b%F{$prompt_color2}$branch"
                 fi
             }
 
-            PROMPT=$'%F{$prompt_color1}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{$prompt_color2}%n%F{$prompt_color3} '$prompt_symbol$' %F{$prompt_color2}%m%B$(git_branch)%F{$prompt_color1})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{$prompt_color1}]\n└─%B%(#.%F{red}#.%F{$prompt_color2}$)%b%F{reset} '
+            # Définition de la variable PROMPT
+            PROMPT="%b%F{$prompt_color1}┌──("  # Couleur et symbole de début de ligne
 
+            # Ajout du nom d'utilisateur, du symbole de prompt et du nom de la machine
+            PROMPT+="%b%F{$prompt_color2}%n"
+            PROMPT+="%F{$prompt_color3} %b$prompt_symbol "
+            PROMPT+="%F{$prompt_color2}%m"
+            PROMPT+="%B$(git_branch)"
 
+            # Ajout du chemin actuel avec gestion de la longueur
+            PROMPT+="%b%F{$prompt_color1}"
+            PROMPT+=")-["
+            PROMPT+="%B%F{reset}%(6~.%-1~/…/%4~.%5~)"
+            PROMPT+="%b%F{$prompt_color1}"
+            PROMPT+="]"
 
-	    #https://unix.stackexchange.com/questions/124407/what-color-codes-can-i-use-in-my-bash-ps1-prompt/124409#124409
+            PROMPT+=$'\n' # retour à la ligne
+
+            # Nouvelle ligne pour la commande
+            PROMPT+="└─%b%F{$prompt_color2}$%b%F{reset} "
+
 
             # Right-side prompt with exit codes and background processes
             #RPROMPT=$'%(?.. %? %F{red}%B⨯%b%F{reset})%(1j. %j %F{yellow}%B⚙%b%F{reset}.)'
@@ -310,5 +329,5 @@ function cs () {
 
 alias updateupgrade="sudo apt update && sudo apt upgrade -y"
 alias nano="micro"
-alias cls="ls -lhXa | awk   '{k=0;for(i=0;i<=8;i++)k+=((substr(\$1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf(\"%0o \",k);print}'"
+alias cls="ls -lhXa --color=auto | awk   '{k=0;for(i=0;i<=8;i++)k+=((substr(\$1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf(\"%0o \",k);print}'"
 
