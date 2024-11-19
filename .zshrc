@@ -114,8 +114,6 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 configure_prompt() {
-    prompt_symbol="•"
-    prompt_symbol2="•"
 
     #bleu blue
     #vert green
@@ -130,39 +128,44 @@ configure_prompt() {
     
     #https://unix.stackexchange.com/questions/124407/what-color-codes-can-i-use-in-my-bash-ps1-prompt/124409#124409
 
-    # Skull emoji for root terminal
-    [ "$EUID" -eq 0 ] && prompt_symbol=💀
     case "$PROMPT_ALTERNATIVE" in
         twoline)
 
             git_branch() {
+                prompt_symbol2="•"
+
                 local branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
                 if [ -n "$branch" ]; then
                     echo "%b%F{$prompt_color3} %b${prompt_symbol2} %b%F{$prompt_color2}$branch"
                 fi
             }
 
-            # Définition de la variable PROMPT
-            PROMPT="%b%F{$prompt_color1}┌──("  # Couleur et symbole de début de ligne
+            set_prompt() {
+                prompt_symbol="•"
 
-            # Ajout du nom d'utilisateur, du symbole de prompt et du nom de la machine
-            PROMPT+="%b%F{$prompt_color2}%n"
-            PROMPT+="%F{$prompt_color3} %b$prompt_symbol "
-            PROMPT+="%F{$prompt_color2}%m"
-            PROMPT+="%B$(git_branch)"
+                # Définition de la variable PROMPT
+                PROMPT="%b%F{$prompt_color1}┌──("  # Couleur et symbole de début de ligne
 
-            # Ajout du chemin actuel avec gestion de la longueur
-            PROMPT+="%b%F{$prompt_color1}"
-            PROMPT+=")-["
-            PROMPT+="%B%F{reset}%(6~.%-1~/…/%4~.%5~)"
-            PROMPT+="%b%F{$prompt_color1}"
-            PROMPT+="]"
+                # Ajout du nom d'utilisateur, du symbole de prompt et du nom de la machine
+                PROMPT+="%b%F{$prompt_color2}%n"
+                PROMPT+="%F{$prompt_color3} %b$prompt_symbol "
+                PROMPT+="%F{$prompt_color2}%m"
+                PROMPT+="%B"$(git_branch)
 
-            PROMPT+=$'\n' # retour à la ligne
+                # Ajout du chemin actuel avec gestion de la longueur
+                PROMPT+="%b%F{$prompt_color1}"
+                PROMPT+=")-["
+                PROMPT+="%B%F{reset}%(6~.%-1~/…/%4~.%5~)"
+                PROMPT+="%b%F{$prompt_color1}"
+                PROMPT+="]"
 
-            # Nouvelle ligne pour la commande
-            PROMPT+="└─%b%F{$prompt_color2}$%b%F{reset} "
+                PROMPT+=$'\n' # retour à la ligne
 
+                # Nouvelle ligne pour la commande
+                PROMPT+="└─%b%F{$prompt_color2}$%b%F{reset} "
+            }
+
+            precmd_functions+=(set_prompt)
 
             # Right-side prompt with exit codes and background processes
             #RPROMPT=$'%(?.. %? %F{red}%B⨯%b%F{reset})%(1j. %j %F{yellow}%B⚙%b%F{reset}.)'
