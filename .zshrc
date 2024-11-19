@@ -114,24 +114,36 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 configure_prompt() {
-    prompt_symbol=🦎
+    prompt_symbol="•"
+    prompt_symbol2="•"
+
+    #bleu blue
+    #vert green
+    #jaune yellow
+    #rouge red
+    #cyan cyan
+    #magenta magenta
+
+    prompt_color1="red"
+    prompt_color2="blue"
+    prompt_color3="magenta"
     # Skull emoji for root terminal
     [ "$EUID" -eq 0 ] && prompt_symbol=💀
     case "$PROMPT_ALTERNATIVE" in
         twoline)
-            #vert bleu
-            #PROMPT=$'%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.blue)}%n'$prompt_symbol$'%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]\n└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
-            #vert rouge
-            #PROMPT=$'%F{%(#.red.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.red)}%n'$prompt_symbol$'%m%b%F{%(#.red.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.red.green)}]\n└─%B%(#.%F{red}#.%F{red}$)%b%F{reset} '
-            #rouge bleu
-            PROMPT=$'%F{%(#.blue.red)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.blue)}%n'$prompt_symbol$'%m%b%F{%(#.blue.red)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.red)}]\n└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
-            #Bleu et Jaune
-            #PROMPT=$'%F{%(#.blue.yellow)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.blue)}%n'$prompt_symbol$'%m%b%F{%(#.blue.yellow)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.yellow)}]\n└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
-            #Magenta et Cyan
-            #PROMPT=$'%F{%(#.magenta.cyan)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.magenta)}%n'$prompt_symbol$'%m%b%F{%(#.magenta.cyan)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.magenta.cyan)}]\n└─%B%(#.%F{red}#.%F{magenta}$)%b%F{reset} '
-            #cian et rouge
-            #PROMPT=$'%F{%(#.red.cyan)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.grey.red)}%n'$prompt_symbol$'%m%b%F{%(#.red.cyan)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.red.cyan)}]\n└─%B%(#.%F{grey}#.%F{red}$)%b%F{reset} '
 
+            git_branch() {
+                local branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+                if [ -n "$branch" ]; then
+                    echo "%B%F{$prompt_color3} ${prompt_symbol2} %B%F{$prompt_color2}$branch%F{reset}"
+                fi
+            }
+
+            PROMPT=$'%F{$prompt_color1}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{$prompt_color2}%n%F{$prompt_color3} '$prompt_symbol$' %F{$prompt_color2}%m%B$(git_branch)%F{$prompt_color1})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{$prompt_color1}]\n└─%B%(#.%F{red}#.%F{$prompt_color2}$)%b%F{reset} '
+
+
+
+	    #https://unix.stackexchange.com/questions/124407/what-color-codes-can-i-use-in-my-bash-ps1-prompt/124409#124409
 
             # Right-side prompt with exit codes and background processes
             #RPROMPT=$'%(?.. %? %F{red}%B⨯%b%F{reset})%(1j. %j %F{yellow}%B⚙%b%F{reset}.)'
@@ -296,6 +308,7 @@ function cs () {
     cd "$@" && ls
 }
 
-alias updateupgrade="yes | sudo apt update ; yes | sudo apt upgrade"
+alias updateupgrade="sudo apt update && sudo apt upgrade -y"
 alias nano="micro"
 alias cls="ls -lhXa | awk   '{k=0;for(i=0;i<=8;i++)k+=((substr(\$1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf(\"%0o \",k);print}'"
+
