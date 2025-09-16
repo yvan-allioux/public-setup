@@ -5,10 +5,10 @@
 sudo apt update && sudo apt upgrade -y
 
 #curl git vim
-sudo apt install curl git vim htop nmap -y
+sudo apt install curl git vim htop nmap tree net-tools traceroute dnsutils -y
 
 #micro
-curl https://getmic.ro | bash && sudo mv ./micro /usr/bin
+#curl https://getmic.ro | bash && sudo mv ./micro /usr/bin
 
 #zsh setup
 sudo apt install zsh -y
