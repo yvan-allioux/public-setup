@@ -334,3 +334,9 @@ alias updateupgrade="sudo apt update && sudo apt upgrade -y"
 alias nano="micro"
 alias cls="ls -lhXa --color=auto | awk   '{k=0;for(i=0;i<=8;i++)k+=((substr(\$1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf(\"%0o \",k);print}'"
 
+alias k="kubectl"
+#alias k="kubectl --kubeconfig=./kubeconfig.yaml"
+alias pipsetup="python -m venv venvLinux && source venvLinux/bin/activate && pip install -r requirements.txt"
+
+
+
