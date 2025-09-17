@@ -1,44 +1,42 @@
 # ~/.zshrc file for zsh interactive shells.
-# see /usr/share/doc/zsh/examples/zshrc for examples
 
-#dl https://github.com/zsh-users/zsh-autosuggestions
+# PLUGINS
+
 #git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
+#git clone https://github.com/marlonrichert/zsh-autocomplete.git ~/.zsh/zsh-autocomplete
+#git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting
+#git clone https://github.com/tom-doerr/zsh_codex.git ~/.zsh/zsh_codex
+
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source ~/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+#source ~/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 #source ~/.zsh/zsh_codex/zsh_codex.plugin.zsh
 
-#install for root ??
-#sudo su
-#chsh -s /bin/zsh root
-#chsh -s $(which zsh) $(whoami)
-#sudo ln -s $HOME/.zsh /root/.zsh
-#ln -s $HOME/.zshrc /root/.zshrc
-#ln -s $HOME/.oh-my-zsh /root/.oh-my-zsh
+setopt autocd              # Permet de changer de dossier simplement en tapant son nom, sans avoir à écrire cd.
+#setopt correct            # auto-corrige les erreurs de frappe
+setopt interactivecomments # Permet d'ajouter des commentaires en mode interactif
+setopt magicequalsubst     # Permet l'expansion des noms de fichiers pour les arguments de la forme ‘anything=expression’
+setopt nonomatch           # Masque le message d'erreur s'il n'y a pas de correspondance pour le motif
+setopt notify              # Signale immédiatement l'état des travaux en arrière-plan
+setopt numericglobsort     # Trie les noms de fichiers numériquement lorsque cela a du sens
+setopt promptsubst         # Permet l'expansion des commandes dans les prompts
+setopt sharehistory        # Partage l'historique des commandes entre les sessions zsh
+setopt incappendhistory    # Ajoute les commandes à l'historique
+setopt histfindnodups      # Ne pas afficher les doublons lors de la recherche dans l'historique
+#setopt rmstarsilent        # Ne pas afficher d'erreur si rm ne trouve pas de fichiers correspondant au motif
+#setopt extendedglob        # Permet l'utilisation de motifs d'expansion avancés
+#setopt globdots            # Inclut les fichiers et dossiers cachés dans les expansions
 
-#si besoin :
-#ln -s ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh /root/.zsh/zsh-autosuggestions.zsh
-#ln -s $HOME/.zshenv /root/.zshenv
-#ln -s $HOME/.zprofile /root/.zprofile
-
-
-setopt autocd              # change directory just by typing its name
-#setopt correct            # auto correct mistakes
-setopt interactivecomments # allow comments in interactive mode
-setopt magicequalsubst     # enable filename expansion for arguments of the form ‘anything=expression’
-setopt nonomatch           # hide error message if there is no match for the pattern
-setopt notify              # report the status of background jobs immediately
-setopt numericglobsort     # sort filenames numerically when it makes sense
-setopt promptsubst         # enable command substitution in prompt
-
+#permet de faire des ctrl + left/right pour se déplacer mot par mot dans les chemin avec des /
 WORDCHARS=${WORDCHARS//\/} # Don't consider certain characters part of the word
 
-# hide EOL sign ('%')
+# enlève le signe de fin de ligne (%) dans le prompt Zsh
 PROMPT_EOL_MARK=""
 
-# configure key keybindings
+# configuration des touches
 bindkey -e                                        # emacs key bindings
 bindkey ' ' magic-space                           # do history expansion on space
+
 bindkey '^U' backward-kill-line                   # ctrl + U
 bindkey '^[[3;5~' kill-word                       # ctrl + Supr
 bindkey '^[[3~' delete-char                       # delete
@@ -51,7 +49,7 @@ bindkey '^[[F' end-of-line                        # end
 bindkey '^[[Z' undo                               # shift + tab undo last action
 bindkey '^X' create_completion
 
-# enable completion features
+# activation de l'autocomplétion
 autoload -Uz compinit
 compinit -d ~/.cache/zcompdump
 zstyle ':completion:*:*:*:*:*' menu select
@@ -68,23 +66,23 @@ zstyle ':completion:*' use-compctl false
 zstyle ':completion:*' verbose true
 zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
-# History configurations
+# configuration de l'historique
 HISTFILE=~/.zsh_history
 HISTSIZE=1000
 SAVEHIST=2000
-setopt hist_expire_dups_first # delete duplicates first when HISTFILE size exceeds HISTSIZE
-setopt hist_ignore_dups       # ignore duplicated commands history list
-setopt hist_ignore_space      # ignore commands that start with space
-setopt hist_verify            # show command with history expansion to user before running it
-#setopt share_history         # share command history data
+setopt hist_expire_dups_first # supression de l'ancienne commande en cas de doublon
+setopt hist_ignore_dups       # ignorer les commandes en double
+setopt hist_ignore_space      # ignorer les commandes précédées d'un espace
+setopt hist_verify            # vérifier la commande avant de l'ajouter à l'historique
+#setopt share_history         # partager l'historique entre les sessions
 
-# force zsh to show the complete history
+# forcer l'affichage de l'historique complet
 alias history="history 0"
 
-# configure `time` format
+# configuration du format de temps
 TIMEFMT=$'\nreal\t%E\nuser\t%U\nsys\t%S\ncpu\t%P'
 
-# make less more friendly for non-text input files, see lesspipe(1)
+# si le programme lesspipe existe, l'utiliser pour pré-traiter les fichiers avant de les afficher avec less
 #[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # set variable identifying the chroot you work in (used in the prompt below)
@@ -92,7 +90,10 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
+# Gestion de la couleur du prompt
+
 # set a fancy prompt (non-color, unless we know we "want" color)
+# Détecter si le terminal supporte les couleur
 case "$TERM" in
     xterm-color|*-256color) color_prompt=yes;;
 esac
@@ -100,6 +101,7 @@ esac
 # uncomment for a colored prompt, if the terminal has the capability; turned
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
+# forcer l’activation des couleurs dans le prompt
 force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
@@ -113,6 +115,8 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+# Fonction de configuration du prompt
+
 configure_prompt() {
 
     #bleu blue
@@ -125,7 +129,7 @@ configure_prompt() {
     prompt_color1="red"
     prompt_color2="blue"
     prompt_color3="red"
-    
+
     #https://unix.stackexchange.com/questions/124407/what-color-codes-can-i-use-in-my-bash-ps1-prompt/124409#124409
 
     case "$PROMPT_ALTERNATIVE" in
@@ -182,12 +186,9 @@ configure_prompt() {
     unset prompt_symbol
 }
 
-# The following block is surrounded by two delimiters.
-# These delimiters must not be modified. Thanks.
-# START KALI CONFIG VARIABLES
 PROMPT_ALTERNATIVE=twoline
 NEWLINE_BEFORE_PROMPT=yes
-# STOP KALI CONFIG VARIABLES
+
 
 if [ "$color_prompt" = yes ]; then
     # override default virtualenv indicator in prompt
@@ -326,17 +327,39 @@ if [ -f /etc/zsh_command_not_found ]; then
     . /etc/zsh_command_not_found
 fi
 
+# MES ALIASES
+
 function cs () {
     cd "$@" && ls
 }
 
-alias updateupgrade="sudo apt update && sudo apt upgrade -y"
-alias nano="micro"
-alias cls="ls -lhXa --color=auto | awk   '{k=0;for(i=0;i<=8;i++)k+=((substr(\$1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf(\"%0o \",k);print}'"
+# Git alias
+gitacp() {
+  git add .
+  git commit -m "$1"
+  git push origin HEAD
+}
+
+alias nano="vim"
+alias cls="ls -lhXa --color=auto | awk '{k=0;for(i=0;i<=8;i++)k+=((substr(\$1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf(\"%0o \",k);print}'"
+
+#alias pipsetup="python -m venv venv && source venv/bin/activate && pip install -r requirements.txt"
+alias pipsetup='python -m venv venv && source venv/bin/activate && [ -f requirements.txt ] || touch requirements.txt && pip install -r requirements.txt'
+alias update="sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && sudo apt autoclean -y"
 
 alias k="kubectl"
-#alias k="kubectl --kubeconfig=./kubeconfig.yaml"
-alias pipsetup="python -m venv venvLinux && source venvLinux/bin/activate && pip install -r requirements.txt"
+alias kgp="kubectl get pods -o wide"
+#alias k1='kubectl --kubeconfig=/home/user/k1/kubeconfig.yaml'
 
-
+#autre alias super utile
+alias path='echo -e ${PATH//:/\\n}' # afficher le PATH avec un dossier par ligne
+alias myip='curl ifconfig.me ; echo' # afficher mon IP publique
+alias ports='sudo netstat -tulanp' # afficher les ports utilisés
+alias portsused='lsof -i -P -n | grep LISTEN' # afficher 
+alias today='date +"%Y-%m-%d"' # afficher la date du jour au format YYYY-MM-DD
+alias topcpu='ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu | head' # afficher les processus qui consomment le plus de CPU
+alias topmem='ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%mem | head' # afficher les processus qui consomment le plus de mémoire
+alias untar='tar -zxvf' # pour les fichiers .tar.gz
+alias h='history'
+alias j='jobs -l' #liste des jobs en cours
 
