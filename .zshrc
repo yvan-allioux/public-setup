@@ -9,7 +9,7 @@
 
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-#source ~/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+source ~/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 #source ~/.zsh/zsh_codex/zsh_codex.plugin.zsh
 
 setopt autocd              # Permet de changer de dossier simplement en tapant son nom, sans avoir à écrire cd.
