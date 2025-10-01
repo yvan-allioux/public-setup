@@ -7,6 +7,7 @@ sudo apt update && sudo apt upgrade -y
 #curl git vim
 sudo apt install curl git vim htop nmap tree net-tools traceroute dnsutils -y
 curl https://raw.githubusercontent.com/yvan-allioux/public-setup/refs/heads/main/.vimrc > ~/.vimrc
+sudo cp ~/.vimrc /root/
 
 #micro
 #curl https://getmic.ro | bash && sudo mv ./micro /usr/bin
