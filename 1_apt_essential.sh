@@ -6,6 +6,9 @@ sudo apt update && sudo apt upgrade -y
 
 #curl git vim
 sudo apt install curl git vim htop nmap tree net-tools traceroute dnsutils -y
+#sudo apt install netcat-openbsd -y
+sudo apt install python3 python3-pip python-is-python3 python3-venv -y && curl -LsSf https://astral.sh/uv/install.sh | sh
+#vim setup
 curl https://raw.githubusercontent.com/yvan-allioux/public-setup/refs/heads/main/.vimrc > ~/.vimrc
 sudo cp ~/.vimrc /root/
 
